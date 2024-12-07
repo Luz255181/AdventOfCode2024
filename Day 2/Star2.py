@@ -1,24 +1,14 @@
 def isSafe(numbers):
     length = len(numbers) - 1
-    booleanSafe = True
-    i = 0
-    if (int(numbers[0]) > int(numbers[1])):
-        while (booleanSafe and i < length):
-            number1 = int(numbers[i])
-            number2 = int(numbers[i+1])
-            diference = number1 - number2
-            if (number1 < number2) or (diference > 3) or (diference == 0):
-                booleanSafe = False
-            i += 1
-    else:
-        while (booleanSafe and i < length):
-            number1 = int(numbers[i])
-            number2 = int(numbers[i+1])
-            diference = number2 - number1
-            if (number1 > number2) or (diference > 3) or (diference == 0):
-                booleanSafe = False
-            i += 1
-    return booleanSafe
+    for i in range(0, length):
+        diference = abs(int(numbers[i]) - int(numbers[i+1]))
+        if (diference > 3) or (diference == 0):
+            return False
+    is_increasing = all(numbers[i] <= numbers[i + 1]
+                        for i in range(len(numbers) - 1))
+    is_decreasing = all(numbers[i] >= numbers[i + 1]
+                        for i in range(len(numbers) - 1))
+    return is_decreasing or is_increasing
 
 
 safe = 0
@@ -26,12 +16,13 @@ with open("input.txt", "r") as input:
     for line in input.readlines():
         numbers = line.split()
         booleanSafe = isSafe(numbers)
+        auxiliar = numbers.copy()
         if not booleanSafe:
             i = 0
-            while (i < (len(numbers)-1) and not booleanSafe):
+            while (i < (len(numbers)-2) and not booleanSafe):
                 auxiliar = numbers.copy()
-                newNumbers = auxiliar.pop(i)
-                booleanSafe = isSafe(newNumbers)
+                auxiliar.pop(i)
+                booleanSafe = isSafe(auxiliar)
                 i += 1
         if booleanSafe:
             safe += 1
